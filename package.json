@@ -1,0 +1,12 @@
+{
+  "name": "wesley-games",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Wesley Rocha",
+  "scripts": {
+    "start": "harp server --port $PORT"
+  },
+  "dependencies": {
+	"harp": "*"
+  }
+}
