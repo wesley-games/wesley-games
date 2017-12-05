@@ -1,0 +1,9 @@
+{
+"TOTAL_MEMORY": 268435456,
+"dataUrl": "baralho-test.data.unityweb",
+"asmCodeUrl": "baralho-test.asm.code.unityweb",
+"asmMemoryUrl": "baralho-test.asm.memory.unityweb",
+"asmFrameworkUrl": "baralho-test.asm.framework.unityweb",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}
