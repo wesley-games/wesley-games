@@ -1,50 +1,73 @@
 <!DOCTYPE html>
-<html lang="en-us">
-    <head>
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="icon" href="favicon.png" >
-        <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Wesley Games</title>
-        <style>
-            html,body,iframe{
-                height:100%;
-                width:100%;
-                overflow: hidden;
-            }
-            .footer{
-                display: none;
-            }
-        </style>
-        <script>
-            function changeUrl(url) {
-                if (!document.getElementById("iframe").src.toString().endsWith(url)) {
-                    document.getElementById("iframe").src = url;
-                }
-            }
-        </script>
-    </head>
-    <body >
-        <div class="w3-sidebar w3-bar-block w3-black w3-card-2" style="width:200px">
-            <button class="w3-bar-item w3-button tablink" style="font-size: 1.1em"
-                    onclick="changeUrl('dashboard.html')">
-					Home
-					</button>
-            <button class="w3-bar-item w3-button tablink"
-                    onclick="changeUrl('plataforma-test/index.html')">
-					Plataforma (Test)
-			</button>
-			<button class="w3-bar-item w3-button tablink"
-                    onclick="changeUrl('baralho-test/index.html')">
-					Baralho (Test)
-			</button>
-			<button class="w3-bar-item w3-button tablink"
-                    onclick="changeUrl('corrida-test/index.html')">
-					Corrida (Test)
-			</button>
-        </div>
+<html lang="en-us" ng-app="gamesApp">
 
-        <iframe  id="iframe" src="dashboard.html" style="border-width: 0 0 0 200px">
-        </iframe>
-    </body>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <title>Wesley Games</title>
+    <style>
+        html,
+        body,
+        iframe,
+        .recipient {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .footer {
+            display: none;
+        }
+    </style>
+    <script>
+        angular.module('gamesApp', [])
+            .controller('gamesController', function ($scope) {
+                $scope.title = 'Lorem Ipsum';
+                $scope.jogando = false;
+                $scope.urlAtual = '';
+                $scope.games = [
+                    { title: 'Plataforma (Test)', description: '', icon: '', url: 'plataforma-test/index.html' },
+                    { title: 'Baralho (Teste)', description: '', icon: '', url: 'baralho-test/index.html' },
+                    { title: 'Corrida (Teste)', description: '', icon: '', url: 'corrida-test/index.html' }
+                ];
+                $scope.changeUrl = function (url) {
+                    $scope.jogando = true;
+                    $scope.urlAtual = url;
+                }
+                $scope.sair = function () {
+                    $scope.jogando = false;
+                }
+            });
+    </script>
+</head>
+
+<body ng-controller="gamesController">
+    <div class="recipient" ng-if="!jogando">
+        <h1 class="text-center">{{title}}</h1>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-evenly; flex-wrap: wrap;">
+            <div class="card" style="width: 200px;" ng-repeat="game in games">
+                <img class="card-img-top" src=".../100px180/" alt="image">
+                <div class="card-body">
+                    <h5 class="card-title">{{game.title}}</h5>
+                    <p class="card-text">Jogo</p>
+                    <a href="#" class="btn btn-primary" ng-click="changeUrl(game.url)">Jogar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="recipient" ng-if="jogando" style="background-color: black;">
+        <div style="display: flex; flex-direction: row; flex-grow: 0; height: 100%;">
+            <a href="#" class="btn btn-primary" ng-click="sair()">Sair</a>
+            <iframe id="iframe" src="{{urlAtual}}" style="border-width: 0;"></iframe>
+        </div>
+    </div>
+</body>
+
 </html>
