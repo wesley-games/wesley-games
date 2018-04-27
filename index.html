@@ -32,20 +32,8 @@
                 $scope.games = [
                     { title: 'Plataforma (Test)', description: 'Teste', icon: 'default.png', url: 'plataforma-test/index.html' },
                     { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Corrida (Teste)', description: 'Teste', icon: 'default.png', url: 'corrida-test/index.html' }
+                    { title: 'Corrida (Teste)', description: 'Teste', icon: 'default.png', url: 'corrida-test/index.html' },
+                    { title: 'Stronghold (Test)', description: 'Teste', icon: 'default.png', url: 'stronghold-test/index.html' }
                 ];
                 $scope.changeUrl = function (url) {
                     $scope.jogando = true;
@@ -54,13 +42,30 @@
                 $scope.sair = function () {
                     $scope.jogando = false;
                 }
+            })
+            .directive('matrixRain', function () {
+                return {
+                    link: function link(scope, element) {
+                        el = element[0];
+                        el.width = window.screen.width;
+                        el.height = window.screen.height;
+                        var context = el.getContext("2d");
+                        var Matrix = function () {
+                            context.fillStyle = 'rgba(255,255,255,.05)';
+                            context.fillRect(0, 0, el.width, el.height);
+                            context.fillStyle = "#000";
+                            context.fillText('wesley games', Math.random() * (el.width), Math.random() * (el.height));
+                        };
+                        setInterval(Matrix, 30);
+                    }
+                }
             });
     </script>
 </head>
 
 <body ng-controller="gamesController">
-    <div class="recipient" ng-if="!jogando">
-        <h5 class="text-center">{{title}}</h5>
+    <div class="recipient" ng-if="!jogando" style="overflow: auto;">
+        <h5 style="width: 100%; text-align: center;">{{title}}</h5>
 
         <div style="display: flex; flex-direction: row; justify-content: space-around; flex-wrap: wrap;">
             <div class="card" style="width: 200px;" ng-repeat="game in games">
@@ -68,7 +73,7 @@
                     <img class="card-img-top" src="images/{{game.icon}}" alt="image">
                 </div>
                 <div class="card-content">
-                    <p class="card-title">{{game.title}}</p>
+                    <p style="font-weight: bold;">{{game.title}}</p>
                     <p>{{game.description}}</p>
                 </div>
                 <div class="card-action">
@@ -78,12 +83,16 @@
         </div>
     </div>
 
-    <div class="recipient" ng-if="jogando" style="background-color: black;">
+    <div class="recipient" ng-if="jogando">
         <div style="display: flex; flex-direction: row; height: 100%;">
-            <a href="#" class="btn btn-primary" ng-click="sair()">Voltar</a>
+            <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="sair()">Voltar</a>
             <iframe id="iframe" src="{{urlAtual}}" style="border-width: 0;"></iframe>
         </div>
     </div>
+
+    <canvas matrix-rain style="z-index : -1; position: absolute; top: 0px;">
+
+    </canvas>
 </body>
 
 </html>
