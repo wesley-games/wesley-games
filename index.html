@@ -49,12 +49,18 @@
                         el = element[0];
                         el.width = window.screen.width;
                         el.height = window.screen.height;
+                        var yPositions = Array(300).join(0).split('');
                         var context = el.getContext("2d");
                         var Matrix = function () {
                             context.fillStyle = 'rgba(255,255,255,.05)';
                             context.fillRect(0, 0, el.width, el.height);
-                            context.fillStyle = "#000";
-                            context.fillText('wesley games', Math.random() * (el.width), Math.random() * (el.height));
+                            context.fillStyle = "#aaa";
+                            yPositions.map(function (y, index) {
+                                text = String.fromCharCode(1e2 + Math.random() * 33);
+                                x = (index * 10) + 10;
+                                context.fillText(text, x, y);
+                                (y > 100 + Math.random() * 1e4) ? yPositions[index] = 0 : yPositions[index] = y + 10;
+                            });
                         };
                         setInterval(Matrix, 30);
                     }
