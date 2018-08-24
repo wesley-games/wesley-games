@@ -27,8 +27,8 @@
         angular.module('gamesApp', [])
             .controller('gamesController', function ($scope) {
                 $scope.title = 'Wesley Games';
-                $scope.jogando = false;
-                $scope.urlAtual = '';
+                $scope.playing = false;
+                $scope.currentUrl = '';
                 $scope.games = [
                     { title: 'Plataforma (Test)', description: 'Teste', icon: 'default.png', url: 'plataforma-test/index.html' },
                     { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
@@ -37,11 +37,11 @@
                     { title: 'Stronghold (Test)', description: 'Teste', icon: 'default.png', url: 'stronghold-test/index.html' }
                 ];
                 $scope.changeUrl = function (url) {
-                    $scope.jogando = true;
-                    $scope.urlAtual = url;
+                    $scope.playing = true;
+                    $scope.currentUrl = url;
                 }
-                $scope.sair = function () {
-                    $scope.jogando = false;
+                $scope.exit = function () {
+                    $scope.playing = false;
                 }
             })
             .directive('matrixRain', function () {
@@ -92,10 +92,10 @@
         <canvas matrix-rain style="z-index : -1; position: absolute; top: 0px;"></canvas>
     </div>
 
-    <div class="recipient" ng-if="jogando">
+    <div class="recipient" ng-if="playing">
         <div style="display: flex; flex-direction: row; height: 100%;">
-            <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="sair()">Voltar</a>
-            <iframe id="iframe" src="{{urlAtual}}" style="border-width: 0;"></iframe>
+            <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Voltar</a>
+            <iframe id="iframe" src="{{currentUrl}}" style="border-width: 0;"></iframe>
         </div>
     </div>
 </body>
