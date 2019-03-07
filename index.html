@@ -27,12 +27,12 @@
                 $scope.playing = false;
                 $scope.currentUrl = '';
                 $scope.games = [
-					{ title: 'Infinity Run (Test)', description: 'Teste', icon: 'infinity-run.png', url: 'infinity-run/index.html' },
-                    { title: 'Plataform (Test)', description: 'Teste', icon: 'platform-test.png', url: 'plataform-test/index.html' },
-                    { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
-                    { title: 'Corrida (Teste)', description: 'Teste', icon: 'default.png', url: 'corrida-test/index.html' },
-                    { title: 'Planeta (Teste)', description: 'Teste', icon: 'default.png', url: 'planet-test/index.html' },
-                    { title: 'Stronghold (Test)', description: 'Teste', icon: 'default.png', url: 'stronghold-test/index.html' }
+					{ title: 'Infinity Run (Test)', description: 'Test', icon: 'infinity-run.png', url: 'infinity-run/index.html' },
+                    { title: 'Plataform (Test)', description: 'Test', icon: 'platform-test.png', url: 'plataform-test/index.html' },
+                    { title: 'Deck (Test)', description: 'Test', icon: 'default.png', url: 'baralho-test/index.html' },
+                    { title: 'Race (Test)', description: 'Test', icon: 'default.png', url: 'corrida-test/index.html' },
+                    { title: 'Planet (Test)', description: 'Test', icon: 'default.png', url: 'planet-test/index.html' },
+                    { title: 'Stronghold (Test)', description: 'Test', icon: 'default.png', url: 'stronghold-test/index.html' }
                 ];
                 $scope.changeUrl = function (url) {
                     $scope.playing = true;
@@ -82,7 +82,7 @@
                     <p>{{game.description}}</p>
                 </div>
                 <div class="card-action">
-                    <a href="#" class="btn blue" ng-click="changeUrl(game.url)">Jogar</a>
+                    <a href="#" class="btn blue" ng-click="changeUrl(game.url)">Play</a>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
 
     <div class="recipient" ng-if="playing">
         <div style="display: flex; flex-direction: row; height: 100%;">
-            <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Voltar</a>
+            <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Back</a>
             <iframe id="iframe" src="{{currentUrl}}" style="border-width: 0;"></iframe>
         </div>
     </div>
