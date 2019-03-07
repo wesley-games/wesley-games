@@ -1,9 +1,11 @@
 {
-"TOTAL_MEMORY": 268435456,
+"companyName": "DefaultCompany",
+"productName": "Plataforma-Test",
 "dataUrl": "plataforma-test.data.unityweb",
 "asmCodeUrl": "plataforma-test.asm.code.unityweb",
 "asmMemoryUrl": "plataforma-test.asm.memory.unityweb",
 "asmFrameworkUrl": "plataforma-test.asm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
 "graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
 "webglContextAttributes": {"preserveDrawingBuffer": false},
 "splashScreenStyle": "Dark",
