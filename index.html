@@ -10,10 +10,7 @@
 
     <title>Wesley Games</title>
     <style>
-        html,
-        body,
-        iframe,
-        .recipient {
+        html, body, iframe, .recipient {
             height: 100%;
             width: 100%;
             overflow: hidden;
@@ -30,6 +27,7 @@
                 $scope.playing = false;
                 $scope.currentUrl = '';
                 $scope.games = [
+					{ title: 'Infinity Run (Test)', description: 'Teste', icon: 'infinity-run.png', url: 'infinity-run/index.html' },
                     { title: 'Plataforma (Test)', description: 'Teste', icon: 'default.png', url: 'plataforma-test/index.html' },
                     { title: 'Baralho (Teste)', description: 'Teste', icon: 'default.png', url: 'baralho-test/index.html' },
                     { title: 'Corrida (Teste)', description: 'Teste', icon: 'default.png', url: 'corrida-test/index.html' },
