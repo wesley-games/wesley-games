@@ -3,8 +3,9 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 
@@ -16,8 +17,39 @@
             width: 100%;
             overflow: hidden;
         }
+        .recipient {
+            overflow: auto;
+        }
+        nav {
+            height: 50px;
+            line-height: 50px;
+        }
+        .nav-wrapper {
+            padding: 0 10px;
+        }
+        nav .brand-logo {
+            font-size: 1.5em;
+        }
+        .grid-card {
+            display: flex; 
+            flex-direction: row; 
+            justify-content: space-around; 
+            flex-wrap: wrap;
+        }
+        .card {
+            width: 200px;
+        }
+        .card .card-action {
+            padding: 0;
+            border: none;
+        }
         .card .card-content {
-            height: 110px;
+            padding: 10px;
+            height: 30px;
+        }
+        .btn-play {
+            float: right;
+            margin: 0 5px 5px 0 !important;
         }
         .footer {
             display: none;
@@ -36,14 +68,14 @@
             // |-----------------------------release-----------------------------|
             //  Release to Manufactoring (RTM) - General Availability (GA) - GOLD
             $scope.games = [
-                { title: 'Genius (RC)', description: 'Test', icon: 'genius.png', url: 'games/genius/index.html' },
-                { title: 'Ping-Pong (RC)', description: 'Test', icon: 'ping-pong.png', url: 'games/ping-pong/index.html' },
-                { title: 'Minesweeper (RC)', description: 'Test', icon: 'minefield.png', url: 'games/minefield/index.html' },
-                { title: 'Infinity Run (RC)', description: 'Test', icon: 'infinity-run.png', url: 'games/infinity-run/index.html' },
-                { title: 'Plataform (RC)', description: 'Test', icon: 'platform-test.png', url: 'games/plataform-test/index.html' },
-                // { title: 'Deck (Beta)', description: 'Test', icon: 'default.png', url: 'baralho-test/index.html' },
-                // { title: 'Race (Pre-alpha)', description: 'Test', icon: 'default.png', url: 'corrida-test/index.html' },
-                // { title: 'Planet (Pre-alpha)', description: 'Test', icon: 'default.png', url: 'planet-test/index.html' },
+                { title: 'Genius (RC)', icon: 'genius.png', url: 'games/genius/index.html' },
+                { title: 'Ping-Pong (RC)', icon: 'ping-pong.png', url: 'games/ping-pong/index.html' },
+                { title: 'Minesweeper (RC)', icon: 'minefield.png', url: 'games/minefield/index.html' },
+                { title: 'Infinity Run (Beta)', icon: 'infinity-run.png', url: 'games/infinity-run/index.html' },
+                { title: 'Plataform (Beta)', icon: 'platform-test.png', url: 'games/plataform-test/index.html' },
+                // { title: 'Deck (Beta)', icon: 'default.png', url: 'baralho-test/index.html' },
+                // { title: 'Race (Pre-alpha)', icon: 'default.png', url: 'corrida-test/index.html' },
+                // { title: 'Planet (Pre-alpha)', icon: 'default.png', url: 'planet-test/index.html' },
             ];
             $scope.changeUrl = function (url) {
                 $scope.playing = true;
@@ -52,53 +84,34 @@
             $scope.exit = function () {
                 $scope.playing = false;
             }
-        })
-        .directive('matrixRain', function () {
-            return {
-                link: function link(scope, element) {
-                    el = element[0];
-                    el.width = window.screen.width;
-                    el.height = window.screen.height;
-                    var yPositions = Array(300).join(0).split('');
-                    var context = el.getContext("2d");
-                    var Matrix = function () {
-                        context.fillStyle = 'rgba(255,255,255,.05)';
-                        context.fillRect(0, 0, el.width, el.height);
-                        context.fillStyle = "#aaa";
-                        yPositions.map(function (y, index) {
-                            text = String.fromCharCode(1e2 + Math.random() * 33);
-                            x = (index * 10) + 10;
-                            context.fillText(text, x, y);
-                            (y > 100 + Math.random() * 1e4) ? yPositions[index] = 0 : yPositions[index] = y + 10;
-                        });
-                    };
-                    setInterval(Matrix, 30);
-                }
-            }
         });
     </script>
 </head>
 
 <body ng-controller="gamesController">
-    <div class="recipient" ng-if="!playing" style="overflow: auto;">
-        <h5 style="width: 100%; text-align: center; font-weight: bold;">{{title}}</h5>
+    
 
-        <div style="display: flex; flex-direction: row; justify-content: space-around; flex-wrap: wrap;">
-            <div class="card" style="width: 200px;" ng-repeat="game in games">
+    <div class="recipient" ng-if="!playing">
+        <div class="navbar-fixed">
+            <nav>
+                <div class="nav-wrapper teal">
+                    <a href="#" class="brand-logo">{{title}}</a>
+                </div>
+            </nav>
+        </div>
+        <div class="grid-card">
+            <div class="card" ng-repeat="game in games">
                 <div class="card-image">
                     <img class="card-img-top" src="images/{{game.icon}}" alt="image">
                 </div>
                 <div class="card-content">
                     <p style="font-weight: bold;">{{game.title}}</p>
-                    <p>{{game.description}}</p>
                 </div>
                 <div class="card-action">
-                    <a href="#" class="btn blue" ng-click="changeUrl(game.url)">Play</a>
+                    <a href="#" class="btn-play waves-effect waves-teal btn-flat blue-text" ng-click="changeUrl(game.url)">Play</a>
                 </div>
             </div>
         </div>
-
-        <canvas matrix-rain style="z-index : -1; position: absolute; top: 0px;"></canvas>
     </div>
 
     <div class="recipient" ng-if="playing">
