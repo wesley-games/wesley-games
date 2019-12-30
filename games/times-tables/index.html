@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>Times Tables</title>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <style>
+            .header {
+                height: 37px;
+                width: auto;
+                margin: 20px;
+                background-color: aliceblue;
+                border: 2px solid lightgray;
+                border-radius: 10px;
+                padding: 5px;
+                align-items: center;
+                font-family: sans-serif;
+                font-weight: bold;
+                font-size: 2em;
+            }
+
+            .timer {
+                float: right;
+            }
+
+            .board {
+                height: 400px;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-evenly;
+                perspective: 1000px;
+                transform-style: preserve-3d;
+            }
+
+            .card {
+                /* flex-basis: 15%;*/
+                background-color: transparent;
+                width: 100px;
+                height: 100px;
+                perspective: 1000px;
+            }
+
+            .card-inner {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                transition: transform 0.8s;
+                transform-style: preserve-3d;
+            }
+
+            .card-front,
+            .card-back {
+                background-color: lightblue;
+                color: white;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 10px;
+                border: 3px dashed black;
+                font-family: sans-serif;
+                font-weight: bold;
+                font-size: 2em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backface-visibility: hidden;
+            }
+
+            .card-front {
+                transform: rotateY(180deg);
+            }
+
+            .card-inner.flipped {
+                transform: rotateY(180deg);
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="header">
+            <div class="timer">0:00</div>
+        </div>
+        <div class="board">
+        </div>
+
+        <script>
+            var interval = setInterval(() => {
+                let timerElement = $('.timer');
+                if (timerElement.length > 0) {
+                    let timer = stringToSeconds(timerElement.html());
+                    timerElement.html(secondsToString(+timer + 1));
+                } else {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            var secondsToString = function (seconds) {
+                return Math.floor(seconds / 60) + ':' + (seconds % 60 + '').padStart(2, 0);
+            }
+
+            var stringToSeconds = function (string) {
+                return +(string.split(':')[0] * 60) + +string.split(':')[1];
+            }
+
+            var getRandomFrom = function (array) {
+                return array[Math.floor(Math.random() * array.length)];
+            }
+
+            var printArray = function (array) {
+                return array.map(a => `[${a}]`).join(' - ');
+            }
+
+            var shuffleArray = function (array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * i);
+                    var temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+                return array;
+            }
+
+            var generateCards = function (timesTablesSelected, numberOfCards) {
+                let cards = [];
+                for (let i = 0; i < numberOfCards / 2; i++) {
+                    let x = getRandomFrom(timesTablesSelected);
+                    let y = getRandomFrom(timesTablesSelected);
+                    cards.push(`${x}x${y}`);
+                    cards.push(x * y);
+                }
+                return cards;
+            }
+
+            var displayCardsOnScreen = function (cards) {
+                let board = $('.board');
+                cards.forEach(c => {
+                    let cardFront = $(`<div class="card-front">${c}</div>`);
+                    let cardBack = $(`<div class="card-back">?</div>`);
+                    let cardInner = $(`<div class="card-inner"></div>`);
+                    let card = $(`<div class="card"></div>`);
+                    card.click(clickCard);
+                    cardInner.append(cardFront);
+                    cardInner.append(cardBack);
+                    card.append(cardInner);
+                    board.append(card);
+                });
+            }
+
+            var firstFlippedValue, secondFlippedValue, firstFlippedCard, secondFlippedCard;
+            var animating = false;
+
+            var clickCard = function (event) {
+                if ($(event.currentTarget).children().first().hasClass('flipped') || animating) {
+                    return;
+                }
+                if (!firstFlippedValue) {
+                    firstFlippedCard = $(event.currentTarget);
+                    firstFlippedCard.children().toggleClass('flipped');
+                    firstFlippedValue = firstFlippedCard.find('.card-front').html();
+                } else {
+                    animating = true;
+                    secondFlippedCard = $(event.currentTarget);
+                    secondFlippedCard.children().toggleClass('flipped');
+                    secondFlippedValue = secondFlippedCard.find('.card-front').html();
+                    if (getTypeOfValue(firstFlippedValue) !== getTypeOfValue(secondFlippedValue) &&
+                        getRawValue(firstFlippedValue) === getRawValue(secondFlippedValue)) {
+                        setTimeout(() => {
+                            firstFlippedCard.css('visibility', 'hidden');
+                            secondFlippedCard.css('visibility', 'hidden');
+                            firstFlippedCard = secondFlippedCard = firstFlippedValue = secondFlippedValue = null;
+                            animating = false;
+                        }, 2000);
+                    } else {
+                        setTimeout(() => {
+                            firstFlippedCard.children().toggleClass('flipped');
+                            secondFlippedCard.children().toggleClass('flipped');
+                            firstFlippedCard = secondFlippedCard = firstFlippedValue = secondFlippedValue = null;
+                            animating = false;
+                        }, 2000);
+                    }
+                }
+            }
+
+            // return if the value is a number or an expression
+            var EXPRESSION = 'expression';
+            var NUMBER = 'number';
+            var getTypeOfValue = function (value) {
+                return value.indexOf('x') >= 0 ? EXPRESSION : NUMBER;
+            }
+            var getRawValue = function (value) {
+                return getTypeOfValue(value) === NUMBER ? +value : +value.split('x')[0] * +value.split('x')[1];
+            }
+
+            var main = function () {
+                var timesTablesSelected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                var numberOfCards = 8;
+                let cards = generateCards(timesTablesSelected, numberOfCards);
+                cards = shuffleArray(cards);
+
+                displayCardsOnScreen(cards);
+            }
+
+            main();
+
+        </script>
+    </body>
+
+</html>

@@ -73,6 +73,7 @@
                 { title: 'Minesweeper (RC)', icon: 'minefield.png', url: 'games/minefield/index.html' },
                 { title: 'Infinity Run (Beta)', icon: 'infinity-run.png', url: 'games/infinity-run/index.html' },
                 { title: 'Plataform (Beta)', icon: 'platform-test.png', url: 'games/plataform-test/index.html' },
+                { title: 'Times Tables (Beta)', icon: 'default.png', url: 'games/times-tables/index.html' },
                 // { title: 'Deck (Beta)', icon: 'default.png', url: 'baralho-test/index.html' },
                 // { title: 'Race (Pre-alpha)', icon: 'default.png', url: 'corrida-test/index.html' },
                 // { title: 'Planet (Pre-alpha)', icon: 'default.png', url: 'planet-test/index.html' },
@@ -83,6 +84,8 @@
             }
             $scope.exit = function () {
                 $scope.playing = false;
+                console.log(angular.element('.recipient').scope());
+                angular.element('.recipient').scope().$destroy();
             }
         });
     </script>
@@ -114,10 +117,17 @@
         </div>
     </div>
 
-    <div class="recipient" ng-if="playing">
+    <!-- <div class="recipient" ng-if="playing">
         <div style="display: flex; flex-direction: row; height: 100%;">
             <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Back</a>
             <iframe id="iframe" src="{{currentUrl}}" style="border-width: 0;"></iframe>
+        </div>
+    </div> -->
+
+    <div class="recipient" ng-if="playing">
+        <div style="display: flex; flex-direction: row; height: 100%;">
+            <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Back</a>
+            <div id="iframe" ng-include="'games/times-tables/index.html'" style="border-width: 0;"></div>
         </div>
     </div>
 </body>
