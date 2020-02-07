@@ -4,6 +4,7 @@
   "description": "",
   "author": "Wesley Rocha",
   "scripts": {
+    "start-dev": "harp server --port 8080",
     "start": "harp server --port $PORT"
   },
   "dependencies": {

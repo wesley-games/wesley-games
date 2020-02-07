@@ -12,7 +12,7 @@
     <title>Wesley Games</title>
 
     <style>
-        html, body, iframe, .recipient {
+        html, body, iframeGame, divGame, .recipient {
             height: 100%;
             width: 100%;
             overflow: hidden;
@@ -68,23 +68,23 @@
             // |-----------------------------release-----------------------------|
             //  Release to Manufactoring (RTM) - General Availability (GA) - GOLD
             $scope.games = [
-                { title: 'Genius (RC)', icon: 'genius.png', url: 'games/genius/index.html' },
-                { title: 'Ping-Pong (RC)', icon: 'ping-pong.png', url: 'games/ping-pong/index.html' },
-                { title: 'Minesweeper (RC)', icon: 'minefield.png', url: 'games/minefield/index.html' },
-                { title: 'Infinity Run (Beta)', icon: 'infinity-run.png', url: 'games/infinity-run/index.html' },
-                { title: 'Plataform (Beta)', icon: 'platform-test.png', url: 'games/plataform-test/index.html' },
-                { title: 'Times Tables (Beta)', icon: 'default.png', url: 'games/times-tables/index.html' },
+                { title: 'Genius (RC)', icon: 'genius.png', url: 'games/genius/index.html', type: 'UNITY' },
+                { title: 'Ping-Pong (RC)', icon: 'ping-pong.png', url: 'games/ping-pong/index.html', type: 'UNITY' },
+                { title: 'Minesweeper (RC)', icon: 'minefield.png', url: 'games/minefield/index.html', type: 'UNITY' },
+                { title: 'Infinity Run (Beta)', icon: 'infinity-run.png', url: 'games/infinity-run/index.html', type: 'UNITY' },
+                { title: 'Plataform (Beta)', icon: 'platform-test.png', url: 'games/plataform-test/index.html', type: 'UNITY' },
+                { title: 'Times Tables (Beta)', icon: 'default.png', url: 'games/times-tables/index.html', type: 'WEB' },
                 // { title: 'Deck (Beta)', icon: 'default.png', url: 'baralho-test/index.html' },
                 // { title: 'Race (Pre-alpha)', icon: 'default.png', url: 'corrida-test/index.html' },
                 // { title: 'Planet (Pre-alpha)', icon: 'default.png', url: 'planet-test/index.html' },
             ];
-            $scope.changeUrl = function (url) {
+            $scope.changeUrl = function (url, type) {
                 $scope.playing = true;
                 $scope.currentUrl = url;
+                $scope.currentType = type;
             }
             $scope.exit = function () {
                 $scope.playing = false;
-                console.log(angular.element('.recipient').scope());
                 angular.element('.recipient').scope().$destroy();
             }
         });
@@ -92,8 +92,6 @@
 </head>
 
 <body ng-controller="gamesController">
-    
-
     <div class="recipient" ng-if="!playing">
         <div class="navbar-fixed">
             <nav>
@@ -111,7 +109,7 @@
                     <p style="font-weight: bold;">{{game.title}}</p>
                 </div>
                 <div class="card-action">
-                    <a href="#" class="btn-play waves-effect waves-teal btn-flat blue-text" ng-click="changeUrl(game.url)">Play</a>
+                    <a href="#" class="btn-play waves-effect waves-teal btn-flat blue-text" ng-click="changeUrl(game.url, game.type)">Play</a>
                 </div>
             </div>
         </div>
@@ -127,7 +125,8 @@
     <div class="recipient" ng-if="playing">
         <div style="display: flex; flex-direction: row; height: 100%;">
             <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Back</a>
-            <div id="iframe" ng-include="'games/times-tables/index.html'" style="border-width: 0;"></div>
+            <iframe id="iframeGame" ng-if="currentType === 'UNITY'" src="{{currentUrl}}" style="border-width: 0;"></iframe>
+            <div id="divGame" ng-if="currentType === 'WEB'" ng-include="currentUrl" style="border-width: 0; width: 100%;"></div>
         </div>
     </div>
 </body>
