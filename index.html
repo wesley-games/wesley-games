@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
@@ -62,7 +63,9 @@
         .controller('gamesController', function ($scope) {
             $scope.title = 'Wesley Games';
             $scope.playing = false;
-            $scope.currentUrl = '';
+            currentGame = null;
+            // $scope.currentUrl = '';
+            // $scope.currentType = '';
             // |-----------testing and development---------------|
             //  Pre-alpha - Alpha - Beta - Release Candidate (RC)
             // |-----------------------------release-----------------------------|
@@ -73,15 +76,16 @@
                 { title: 'Minesweeper (RC)', icon: 'minefield.png', url: 'games/minefield/index.html', type: 'UNITY' },
                 { title: 'Infinity Run (Beta)', icon: 'infinity-run.png', url: 'games/infinity-run/index.html', type: 'UNITY' },
                 { title: 'Plataform (Beta)', icon: 'platform-test.png', url: 'games/plataform-test/index.html', type: 'UNITY' },
-                { title: 'Times Tables (Beta)', icon: 'default.png', url: 'games/times-tables/index.html', type: 'WEB' },
+                { title: 'Times Tables (Beta)', icon: 'default.png', url: 'games/times-tables/index.html', type: 'JAVASCRIPT' },
                 // { title: 'Deck (Beta)', icon: 'default.png', url: 'baralho-test/index.html' },
                 // { title: 'Race (Pre-alpha)', icon: 'default.png', url: 'corrida-test/index.html' },
                 // { title: 'Planet (Pre-alpha)', icon: 'default.png', url: 'planet-test/index.html' },
             ];
-            $scope.changeUrl = function (url, type) {
+            $scope.changeUrl = function (game) {
                 $scope.playing = true;
-                $scope.currentUrl = url;
-                $scope.currentType = type;
+                $scope.currentGame = game;
+                // $scope.currentUrl = game.url;
+                // $scope.currentType = game.type;
             }
             $scope.exit = function () {
                 $scope.playing = false;
@@ -106,27 +110,24 @@
                     <img class="card-img-top" src="images/{{game.icon}}" alt="image">
                 </div>
                 <div class="card-content">
-                    <p style="font-weight: bold;">{{game.title}}</p>
+                    <div style="display: flex; justify-content: space-between;">
+                        <p style="font-weight: bold;">{{game.title}}</p>
+                        <i ng-if="game.type === 'UNITY'" class="fab fa-unity"></i>
+                        <i ng-if="game.type === 'JAVASCRIPT'" class="fab fa-js-square"></i>
+                    </div>
                 </div>
                 <div class="card-action">
-                    <a href="#" class="btn-play waves-effect waves-teal btn-flat blue-text" ng-click="changeUrl(game.url, game.type)">Play</a>
+                    <a href="#" class="btn-play waves-effect waves-teal btn-flat blue-text" ng-click="changeUrl(game)">Play</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- <div class="recipient" ng-if="playing">
-        <div style="display: flex; flex-direction: row; height: 100%;">
-            <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Back</a>
-            <iframe id="iframe" src="{{currentUrl}}" style="border-width: 0;"></iframe>
-        </div>
-    </div> -->
-
     <div class="recipient" ng-if="playing">
         <div style="display: flex; flex-direction: row; height: 100%;">
             <a href="#" class="btn btn-primary" style="margin: 10px 0 0 10px;" ng-click="exit()">Back</a>
-            <iframe id="iframeGame" ng-if="currentType === 'UNITY'" src="{{currentUrl}}" style="border-width: 0;"></iframe>
-            <div id="divGame" ng-if="currentType === 'WEB'" ng-include="currentUrl" style="border-width: 0; width: 100%;"></div>
+            <iframe id="iframeGame" ng-if="currentGame.type === 'UNITY'" src="{{currentGame.url}}" style="border-width: 0;"></iframe>
+            <div id="divGame" ng-if="currentGame.type === 'JAVASCRIPT'" ng-include="currentGame.url" style="border-width: 0; width: 100%;"></div>
         </div>
     </div>
 </body>
