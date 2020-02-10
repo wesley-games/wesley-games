@@ -6,8 +6,8 @@
         <title>Times Tables</title>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
         <style>
-            .header {
-                height: 37px;
+            .header-timer {
+                height: 60px;
                 width: auto;
                 margin: 20px;
                 background-color: aliceblue;
@@ -25,17 +25,20 @@
             }
 
             .board {
-                height: 400px;
-                display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: space-evenly;
+                /* height: 400px; */
+                /* display: flex; */
+                /* flex-direction: row; */
+                /* flex-wrap: wrap; */
                 perspective: 1000px;
                 transform-style: preserve-3d;
+                display: grid;
+                grid-template-columns: auto auto auto auto auto auto auto auto;
+                justify-content: space-evenly;
+                grid-row-gap: 20px;
             }
 
-            .card {
-                /* flex-basis: 15%;*/
+            .card-container {
+                cursor: pointer;
                 background-color: transparent;
                 width: 100px;
                 height: 100px;
@@ -81,7 +84,7 @@
     </head>
 
     <body>
-        <div class="header">
+        <div class="header-timer">
             <div class="timer">0:00</div>
         </div>
         <div class="board">
@@ -141,7 +144,7 @@
                     let cardFront = $(`<div class="card-front">${c}</div>`);
                     let cardBack = $(`<div class="card-back">?</div>`);
                     let cardInner = $(`<div class="card-inner"></div>`);
-                    let card = $(`<div class="card"></div>`);
+                    let card = $(`<div class="card-container"></div>`);
                     card.click(clickCard);
                     cardInner.append(cardFront);
                     cardInner.append(cardBack);
@@ -197,7 +200,7 @@
 
             var main = function () {
                 var timesTablesSelected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-                var numberOfCards = 8;
+                var numberOfCards = 32;
                 let cards = generateCards(timesTablesSelected, numberOfCards);
                 cards = shuffleArray(cards);
 
