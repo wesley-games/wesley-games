@@ -80,26 +80,52 @@
                 transform: rotateY(180deg);
             }
 
+            .hide {
+                display: none;
+            }
+
+            .card {
+                width: 500px;
+                padding: 30px;
+                margin: 50px auto;
+            }
+
+            .difficultySelected {
+                outline: 5px solid yellow;
+            }
+
         </style>
     </head>
 
     <body>
-        <div class="header-timer">
-            <div class="timer">0:00</div>
+        <div id="menuModal"
+             class="card">
+            <div>
+                <h4 style="text-align: center;">Escolha sua dificuldade</h4>
+                <div style="display: flex; justify-content: space-evenly;">
+                    <input id="level1" type="radio" value="1">
+                    <label for="level1" class="btn difficultySelected" onclick="selectDifficulty(event, 1)">FÁCIL</label>
+                    <input id="level2" type="radio" value="2" checked>
+                    <label for="level2" class="btn" onclick="selectDifficulty(event, 2)">MÉDIO</label>
+                    <input id="level3" type="radio" value="3">
+                    <label for="level3" class="btn" onclick="selectDifficulty(event, 3)">DIFÍCIL</label>
+                </div>
+                <hr />
+                <button id="buttonStart" class="btn blue">Começar</button>
+            </div>
         </div>
-        <div class="board">
+
+        <div id="gameBoard" class="hide">
+            <div class="header-timer">
+                <div class="timer">0:00</div>
+            </div>
+    
+            <div class="board">
+            </div>
         </div>
 
         <script>
-            var interval = setInterval(() => {
-                let timerElement = $('.timer');
-                if (timerElement.length > 0) {
-                    let timer = stringToSeconds(timerElement.html());
-                    timerElement.html(secondsToString(+timer + 1));
-                } else {
-                    clearInterval(interval);
-                }
-            }, 1000);
+            var menuModal = $('#menuModal');
 
             var secondsToString = function (seconds) {
                 return Math.floor(seconds / 60) + ':' + (seconds % 60 + '').padStart(2, 0);
@@ -169,6 +195,7 @@
                     secondFlippedCard = $(event.currentTarget);
                     secondFlippedCard.children().toggleClass('flipped');
                     secondFlippedValue = secondFlippedCard.find('.card-front').html();
+
                     if (getTypeOfValue(firstFlippedValue) !== getTypeOfValue(secondFlippedValue) &&
                         getRawValue(firstFlippedValue) === getRawValue(secondFlippedValue)) {
                         setTimeout(() => {
@@ -176,6 +203,11 @@
                             secondFlippedCard.css('visibility', 'hidden');
                             firstFlippedCard = secondFlippedCard = firstFlippedValue = secondFlippedValue = null;
                             animating = false;
+
+                            let remainingCards = $('.board').find('div div.card-inner:not(.flipped)').length;
+                            if (remainingCards <= 0) {
+                                openMenu();
+                            }
                         }, 2000);
                     } else {
                         setTimeout(() => {
@@ -188,6 +220,28 @@
                 }
             }
 
+            var difficulty = 1;
+            var selectDifficulty = function (event, difficultySelected) {
+                $(event.target.parentNode).children('label').removeClass('difficultySelected');
+                $(event.target).addClass('difficultySelected');
+                difficulty = difficultySelected;
+            }
+
+            $('#buttonStart').click(function () {
+                closeMenu();
+                main(difficulty);
+            });
+
+            var openMenu = function () {
+                $('#menuModal').removeClass('hide');
+                $('#gameBoard').addClass('hide');
+            }
+
+            var closeMenu = function () {
+                $('#menuModal').addClass('hide');
+                $('#gameBoard').removeClass('hide');
+            }
+
             // return if the value is a number or an expression
             var EXPRESSION = 'expression';
             var NUMBER = 'number';
@@ -198,16 +252,30 @@
                 return getTypeOfValue(value) === NUMBER ? +value : +value.split('x')[0] * +value.split('x')[1];
             }
 
-            var main = function () {
-                var timesTablesSelected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-                var numberOfCards = 32;
-                let cards = generateCards(timesTablesSelected, numberOfCards);
-                cards = shuffleArray(cards);
-
-                displayCardsOnScreen(cards);
+            var zerarGame = function() {
+                $('.timer').html(secondsToString(0));
+                $('.board').empty();
+                clearInterval(interval);
             }
 
-            main();
+            var interval;
+            var main = function (difficulty) {
+                zerarGame();
+                
+                var timesTablesSelected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                var numberOfCards = 2 ** (2 + difficulty);
+                let cards = generateCards(timesTablesSelected, numberOfCards);
+                cards = shuffleArray(cards);
+                displayCardsOnScreen(cards);
+
+                interval = setInterval(() => {
+                    let timerElement = $('.timer');
+                    if (timerElement.length > 0) {
+                        let timer = stringToSeconds(timerElement.html());
+                        timerElement.html(secondsToString(+timer + 1));
+                    }
+                }, 1000);
+            }
 
         </script>
     </body>
