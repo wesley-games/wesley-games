@@ -25,10 +25,6 @@
             }
 
             .board {
-                /* height: 400px; */
-                /* display: flex; */
-                /* flex-direction: row; */
-                /* flex-wrap: wrap; */
                 perspective: 1000px;
                 transform-style: preserve-3d;
                 display: grid;
@@ -91,7 +87,13 @@
             }
 
             .difficultySelected {
-                outline: 5px solid yellow;
+                box-shadow: 0 0 0 5pt yellow;
+            }
+            .difficultySelected:hover {
+                box-shadow: 0 0 0 5pt yellow;
+            }
+            .btn-difficult {
+                border-radius: 20px;
             }
 
         </style>
@@ -101,17 +103,18 @@
         <div id="menuModal"
              class="card">
             <div>
-                <h4 style="text-align: center;">Escolha sua dificuldade</h4>
+                <h4 style="text-align: center; margin-bottom: 50px;">Escolha sua dificuldade</h4>
                 <div style="display: flex; justify-content: space-evenly;">
                     <input id="level1" type="radio" value="1">
-                    <label for="level1" class="btn difficultySelected" onclick="selectDifficulty(event, 1)">FÁCIL</label>
+                    <label for="level1" class="btn btn-difficult difficultySelected" onclick="selectDifficulty(event, 1)">FÁCIL</label>
                     <input id="level2" type="radio" value="2" checked>
-                    <label for="level2" class="btn" onclick="selectDifficulty(event, 2)">MÉDIO</label>
+                    <label for="level2" class="btn btn-difficult" onclick="selectDifficulty(event, 2)">MÉDIO</label>
                     <input id="level3" type="radio" value="3">
-                    <label for="level3" class="btn" onclick="selectDifficulty(event, 3)">DIFÍCIL</label>
+                    <label for="level3" class="btn btn-difficult" onclick="selectDifficulty(event, 3)">DIFÍCIL</label>
                 </div>
-                <hr />
-                <button id="buttonStart" class="btn blue">Começar</button>
+                <div style="margin-top: 50px; display: flex; justify-content: center;">
+                    <button id="buttonStart" class="btn blue">Começar</button>
+                </div>
             </div>
         </div>
 
