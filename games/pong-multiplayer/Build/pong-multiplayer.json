@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "pong-multiplayer",
+"productVersion": "0.1",
+"dataUrl": "pong-multiplayer.data.unityweb",
+"wasmCodeUrl": "pong-multiplayer.wasm.code.unityweb",
+"wasmFrameworkUrl": "pong-multiplayer.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.3.13f1"
+}
