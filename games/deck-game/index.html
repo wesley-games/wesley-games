@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+    <!-- ISSUES 
+
+    1 - Se um player joga uma carta de naipe errado várias vezes, eventualmente o jogo declara esse player o vencedor.
+    
+    2 - Se existirem mais de uma sala aberta e um jogador se desconecta de uma delas, todas as outras são derrubadas.
+    
+    -->
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>Deck Game</title>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+        <style>
+            .gamePanel {
+                height: 720px;
+                margin: 30px;
+                padding: 30px; 
+                box-shadow: 0px 5px 10px 3px rgba(0, 0, 0, 0.35);
+            }
+
+            .gameController {
+                margin-top: 5px;
+                background-color: #81c784;
+                border:1px solid black;
+                padding: 20px;
+                height: 85%;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr 1fr;
+                grid-row-gap: 10%;
+                grid-template-areas: 
+                    "enemy enemy enemy enemy enemy "
+                    "turn . table . deck"
+                    "player player player player player";
+            }
+
+            .gameController .turn {
+                grid-area: turn;
+                font-family: Arial;
+                font-weight: bolder;
+                font-size: 2em;
+                text-align: center;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .gameController .deck {
+                grid-area: deck;
+                position: relative;
+                display: flex;
+                background-color: #4caf50;
+                border: 1px solid black;
+                padding: 15px;
+            }
+
+            .gameController .deck .card {
+                position: absolute;
+                left: 0;
+                right: 0;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .gameController .deck:empty::after {
+                content: "PASS";
+                font-family: Arial;
+                font-weight: bolder;
+                font-size: 2em;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .gameController .table {
+                grid-area: table;
+                background-color: #4caf50;
+                border: 1px solid black;
+                padding: 15px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .gameController .enemyHand {
+                grid-area: enemy;
+                background-color: #4caf50;
+                border: 1px solid black;
+                padding: 15px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .gameController .playerHand {
+                grid-area: player;
+                background-color: #4caf50;
+                border: 1px solid black;
+                padding: 15px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .card {
+                background-color: lightblue;
+                border: 5px solid black;
+                border-radius: 10px;
+                margin: 0px 5px;
+                width: 50px;
+                min-width: 50px;
+                height: 100px;
+                display: flex;
+                flex-direction: column;
+                align-self: center;
+            }
+
+            .card:empty::after {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                content: "\01F7B4";
+                font-size: 2em;
+                color: grey;
+            }
+
+            .card span:first-child {
+                display: flex;
+                justify-content: flex-start;
+                margin: -7px 2px;
+                font-family: cursive;
+                font-size: 1.5em;
+            }
+            .card span:last-child[suit] {
+                margin-top: -10px;
+                visibility: hidden;
+                display: flex;
+                justify-content: flex-start;
+                margin: -15px 0;
+            }
+            .card span:last-child[suit]::after {
+                margin-left: -9px;
+                visibility: visible;
+                font-size: 2em;
+            }
+            .card span:last-child[suit="H"]::after {
+                content: "\002665";
+                color: red;
+            }
+            .card span:last-child[suit="D"]::after {
+                content: "\002666";
+                color: red;
+            }
+            .card span:last-child[suit="S"]::after {
+                content: "\002660";
+                color: black;
+            }
+            .card span:last-child[suit="C"]::after {
+                content: "\002663";
+                color: black;
+            }
+
+            #disconnect, #join {
+                margin-left: 20px;
+            }
+
+            .button {
+                box-shadow: inset 0px 1px 3px 0px #91b8b3;
+                background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+                background-color: #768d87;
+                border-radius: 5px;
+                border: 1px solid #566963;
+                display: inline-block;
+                cursor: pointer;
+                color: #ffffff;
+                font-family: cursive;
+                font-size: 1em;
+                font-weight: bold;
+                padding: 5px 15px;
+                text-decoration: none;
+                text-shadow: 0px -1px 0px #2b665e;
+            }
+            .button:hover {
+                background: linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
+                background-color: #6c7c7c;
+            }
+            .button:active {
+                position: relative;
+                top: 1px;
+            }
+
+            input#room {
+                width: 182px;
+                font-size: 1em;
+                font-family: cursive;
+                padding-left: 18px;
+                border-radius: 5px;
+                height: 32px;
+                margin-bottom: 15px;
+            }
+
+            span.roomName {
+                border: 1px solid black;
+                border-radius: 5px;
+                font-family: cursive;
+                font-size: 1em;
+                font-weight: bold;
+                padding: 5px 15px;
+                width: 200px;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="gamePanel">
+            <div id="roomController">
+                <input id="room" class="room" type="text">
+                <button id="join" class="button">Join Room</button>
+            </div>
+            <div id="roomHeader" hidden>
+                <span id="roomName" class="roomName"></span>
+                <button id="disconnect" class="button">Disconnect</button>
+            </div>
+            <div id="gameController" class="gameController">
+                <div id="deck" class="deck"></div>
+                <div id="turn" class="turn"></div>
+                <div id="enemyHand" class="enemyHand"></div>
+                <div id="table" class="table"></div>
+                <div id="playerHand" class="playerHand"></div>
+            </div>
+            <div id="roomRestart" hidden>
+                <button id="restart" class="button">Restart</button>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                let socket = io.connect('https://deck-server.herokuapp.com/');
+                // let socket = io.connect('http://localhost:5000');
+                let enabledToPlay = false;
+                let playerCardPlayed = null;
+                let enemyCardPlayed = null;
+
+                $('#join').click(function (event) {
+                    let room = $('#room').val();
+                    socket.emit('join_room', room);
+                    $('#roomName').text(room);
+                    $('#roomController').hide();
+                    $('#roomHeader').show();
+                });
+
+                $('#disconnect').click(function (event) {
+                    socket.emit('leave_room');
+                    $('#roomController').show();
+                    $('#roomHeader').hide();
+                    $('.deck').empty();
+                    $('.table').empty();
+                    $('.playerHand').empty();
+                    $('.enemyHand').empty();
+                    $('.turn').text('');
+                });
+
+                socket.on('disconnected_play', function () {
+                    $('.deck').empty();
+                    $('.table').empty();
+                    $('.playerHand').empty();
+                    $('.enemyHand').empty();
+                    $('.turn').text('');
+                });
+
+                $('#restart').click(function (event) {
+                    socket.emit('restart_game');
+                })
+
+                socket.on('started_game', function () {
+                    $('.deck').empty();
+                    $('.table').empty();
+                    $('.enemyHand').empty();
+                    $('.playerHand').empty();
+                    $('.turn').text('');
+                    $('#roomRestart').hide();
+
+                    for (let i = 0; i < 52; i++) {
+                        let divCard = $('<div/>').addClass('card');
+                        $('.deck').append(divCard);
+                    }
+
+                    let startCards = 0;
+                    let drawing = setInterval(function () {
+                        if (startCards < 3) {
+                            startCards++;
+                            socket.emit('draw_card');
+                        } else {
+                            clearInterval(drawing);
+                        }
+                    }, 500);
+                });
+
+                $('.deck').click(function (event) {
+                    if (enabledToPlay) {
+                        socket.emit('draw_card');
+                    }
+                });
+
+                socket.on('play_turn', function () {
+                    $('.turn').text('YOUR TURN');
+                    enabledToPlay = true;
+                });
+
+                socket.on('drawn_card', function (card) {
+                    $('.deck div:last-child').detach();
+
+                    if (card) {
+                        let spanSuit = $('<span/>').attr('suit', card.slice(0, 1)).text(card.slice(0, 1));
+                        let spanValue = $('<span/>').text(card.slice(1));
+                        let divCard = $('<div/>').addClass('card').append(spanValue).append(spanSuit).click(onClickedCard);
+                        $('.playerHand').append(divCard);
+                    }
+                });
+
+                socket.on('drawn_enemy_card', function () {
+                    let e = $('.deck div:last-child').detach();
+                    $('.enemyHand').append(e);
+                });
+
+                socket.on('played_enemy_card', function (card) {
+                    $('.enemyHand div:last-child').detach();
+
+                    let spanSuit = $('<span/>').attr('suit', card.slice(0, 1)).text(card.slice(0, 1));
+                    let spanValue = $('<span/>').text(card.slice(1));
+                    let divCard = $('<div/>').addClass('card').append(spanValue).append(spanSuit);
+                    enemyCardPlayed = divCard;
+                    $('.table').append(divCard);
+                });
+
+                // Play card function
+                var onClickedCard = function (event) {
+                    if (enabledToPlay) {
+                        let card = $(event.currentTarget);
+                        card.detach();
+                        playerCardPlayed = card;
+                        $('.table').append(card);
+
+                        let suit = card.children().last().text();
+                        let value = card.children().first().text();
+                        socket.emit('play_card', suit + value);
+
+                        $('.turn').text('');
+                        enabledToPlay = false;
+                    }
+                }
+
+                socket.on('wrong_card', function () {
+                    setTimeout(() => {
+                        $('.playerHand').append(playerCardPlayed);
+                        $('.turn').text('YOUR TURN');
+                        enabledToPlay = true;
+                    }, 500);
+                });
+
+                socket.on('wrong_enemy_card', function () {
+                    setTimeout(() => {
+                        $(enemyCardPlayed).detach();
+                        $('.enemyHand').append($('<div />').addClass('card'));
+                    }, 500);
+                });
+
+                socket.on('win_turn', function () {
+                    $('.table').empty();
+                    $('.turn').text('YOUR TURN');
+                    enabledToPlay = true;
+                });
+
+                socket.on('lose_turn', function () {
+                    $('.table').empty();
+                    $('.turn').text('');
+                });
+
+                socket.on('win_game', function () {
+                    $('#roomRestart').show();
+                    $('.turn').text('YOU WIN');
+                    enabledToPlay = false;
+                })
+
+                socket.on('lose_game', function () {
+                    $('#roomRestart').show();
+                    $('.turn').text('YOU LOSE');
+                    enabledToPlay = false;
+                });
+            });
+
+        </script>
+    </body>
+
+</html>

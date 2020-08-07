@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 
     <title>Wesley Games</title>
 
@@ -45,12 +46,15 @@
             font-size: large;
             font-weight: bold;
         }
-        .card .card-action {
-            padding: 0;
-            border: none;
+        .card .card-image {
+            padding: 3px;
         }
         .card .card-content {
             padding: 10px;
+        }
+        .card .card-action {
+            padding: 0;
+            border: none;
         }
         .btn-play {
             float: right;
@@ -78,11 +82,12 @@
             $scope.games = [
                 { title: '2048 Clone (RC)', icon: '2048.png', url: 'games/2048/index.html', type: 'UNITY' },
                 { title: 'Minesweeper (RC)', icon: 'minefield.png', url: 'games/minefield/index.html', type: 'UNITY' },
+                { title: 'Deck Game (RC)', icon: 'deck-game.png', url: 'games/deck-game/index.html', type: 'JAVASCRIPT' },
                 { title: 'Genius (RC)', icon: 'genius.png', url: 'games/genius/index.html', type: 'UNITY' },
                 { title: 'Ping-Pong (RC)', icon: 'ping-pong.png', url: 'games/ping-pong/index.html', type: 'UNITY' },
                 { title: 'Times Tables (RC)', icon: 'times-tables.png', url: 'games/times-tables/index.html', type: 'JAVASCRIPT' },
-                { title: 'Infinity Run (Beta)', icon: 'infinity-run.png', url: 'games/infinity-run/index.html', type: 'UNITY' },
                 { title: 'Plataform (Beta)', icon: 'platform-test.png', url: 'games/plataform-test/index.html', type: 'UNITY' },
+                { title: 'Infinity Run (Alpha)', icon: 'infinity-run.png', url: 'games/infinity-run/index.html', type: 'UNITY' },
                 // { title: 'Deck (Beta)', icon: 'default.png', url: 'baralho-test/index.html' },
                 // { title: 'Race (Pre-alpha)', icon: 'default.png', url: 'corrida-test/index.html' },
                 // { title: 'Planet (Pre-alpha)', icon: 'default.png', url: 'planet-test/index.html' },
